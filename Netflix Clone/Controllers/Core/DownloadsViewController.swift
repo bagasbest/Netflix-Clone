@@ -1,5 +1,5 @@
 //
-//  HomeViewController.swift
+//  DownloadsViewController.swift
 //  Netflix Clone
 //
 //  Created by Bagas Pangestu on 21/08/25.
@@ -7,10 +7,11 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+class DownloadsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
 
         // Do any additional setup after loading the view.
     }

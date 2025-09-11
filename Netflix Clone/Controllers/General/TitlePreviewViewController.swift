@@ -40,9 +40,15 @@ class TitlePreviewViewController: UIViewController {
     }()
     
     private let webView: WKWebView = {
-       let webView = WKWebView()
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        return webView
+        let config = WKWebViewConfiguration()
+        config.allowsInlineMediaPlayback = true
+        config.mediaTypesRequiringUserActionForPlayback = []   // auto-allow
+        if #available(iOS 14.0, *) {
+            config.defaultWebpagePreferences.allowsContentJavaScript = true
+        }
+        let wv = WKWebView(frame: .zero, configuration: config)
+        wv.translatesAutoresizingMaskIntoConstraints = false
+        return wv
     }()
     
     override func viewDidLoad() {
@@ -55,6 +61,13 @@ class TitlePreviewViewController: UIViewController {
         view.addSubview(downloadButton)
         
         configureConstraints()
+        
+        WKWebsiteDataStore.default().removeData(
+                ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
+                modifiedSince: Date.distantPast
+            ) {
+                print("✅ Cleared WKWebView data")
+            }
     }
 
     func configureConstraints() {
@@ -92,10 +105,13 @@ class TitlePreviewViewController: UIViewController {
     func configure(with model: TitlePreviewViewModel) {
         titleLabel.text = model.title
         overviewLabel.text = model.titleOverview
-        
+
         guard let videoId = model.youtubeView.id.videoId else { return }
-        guard let url = URL(string: "https://www.youtube.com/embed/\(videoId)") else { return }
-       
+
+        let urlString =
+          "https://www.youtube.com/embed/\(videoId)?playsinline=1&enablejsapi=1&origin=https://www.youtube.com&rel=0&modestbranding=1"
+
+        guard let url = URL(string: urlString) else { return }
         webView.load(URLRequest(url: url))
     }
 }

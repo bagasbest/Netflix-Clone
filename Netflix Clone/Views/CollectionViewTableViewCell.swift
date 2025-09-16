@@ -55,7 +55,14 @@ class CollectionViewTableViewCell: UITableViewCell {
     }
     
     private func downloadTitleAt(indexPath: IndexPath) {
-        
+        DataPersistanceManager.shared.downloadTitleWith(model: titles[indexPath.row]) { result in
+            switch result {
+            case .success():
+                print("success")
+            case .failure(let error):
+                print("error \(error)")
+            }
+        }
     }
 }
 
@@ -112,4 +119,6 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
             }
         return config
     }
+    
+    
 }
